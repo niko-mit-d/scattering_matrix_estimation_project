@@ -1,19 +1,21 @@
-function Sk = generate_scattering_matrices(dim_S, n, options)
+function Sk = generate_scattering_matrices(S0, dim_S, n, options)
 % generate_scattering_matrices Generates n random scattering matrices of
 % dimensionality dim_S that satisfy both the symmetric and unitary
 % properties.
 %
 % Sk is of size (dim_S, dim_S, n)
 arguments
+    S0 (:,:) double;
     dim_S double {mustBeInteger, mustBePositive};
     n double {mustBeInteger, mustBePositive};
     options.checkProperties logical = false;
 end
 
 Sk = zeros(dim_S, dim_S, n);
-for i=1:n
+Sk(:,:,1) = S0;
+for i=2:n
     % generate a random complex symmetric matrix
-    A = randn(dim_S) + 1i * randn(dim_S);
+    A = 0.1*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
     A = (A + A.') / 2; % Make it symmetric (S = S^T)
     
     % ensure S is unitary (S^H * S = I)

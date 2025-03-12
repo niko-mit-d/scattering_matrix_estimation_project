@@ -5,7 +5,8 @@ addpath(genpath("."));
 run run_parmeters.m
 
 %% Simulate random scattering matrices
-Sk = generate_scattering_matrices(param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
+S0 = eye(param.sys.dim_S);
+Sk = generate_scattering_matrices(S0, param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
 xk = scattering_matrices_to_states(Sk);
 Sk2 = states_to_scattering_matrices(xk);
 
