@@ -28,6 +28,7 @@ end
 
 yk = evaluate_y(xk, tau, uk, param);
 
-plot(param.sim.t, yk);
+% plot(param.sim.t, real(yk));
+plot_schedule(tau, uk, param);
 %%
 plot_xk(xk, param);
