@@ -12,5 +12,12 @@ param_sim.Ts = 1e-3; % sample time in sec
 param_sim.t = 0:param_sim.Ts:param_sim.T; % time vector
 param_sim.dim_t = length(param_sim.t);
 
+%% Observer parameters
+param_obs.A = zeros(param_sys.n); % observer only assumes noise is measured
+param_obs.B = eye(param_sys.n);
+param_obs.N = param_sim.dim_S; % number of sensors
+param_obs.C = eye(param_sys.n);
+param_obs.D = zeros(param_sys.n); % assuming there is no output noise
+
 %% Scheduling optimization parameter
-param_opt.P0 = diag(ones(param_sys.n,1));
+param_sch.P0 = diag(ones(param_sys.n,1));

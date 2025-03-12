@@ -42,4 +42,3 @@ if options.checkProperties
     end
 end
 end
-
