@@ -6,6 +6,8 @@ run run_parmeters.m
 
 %% Simulate random scattering matrices
 S0 = eye(param.sys.dim_S);
+S0(2,2) = 1-1i*1;
+S0(3,3) = 1i;
 Sk = generate_scattering_matrices(S0, param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
 xk = scattering_matrices_to_states(Sk);
 Sk2 = states_to_scattering_matrices(xk);
@@ -28,11 +30,4 @@ yk = evaluate_y(xk, tau, uk, param);
 
 plot(param.sim.t, yk);
 %%
-figure;
-for i=1:param.sys.dim_S^2
-    subplot(param.sys.dim_S, param.sys.dim_S, i);
-    plot(param.sim.t, xk(i,:));
-    hold on;
-    plot(param.sim.t, xk(i+param.sys.dim_S,:));
-    legend("Re", "Im");
-end
+plot_xk(xk, param);
