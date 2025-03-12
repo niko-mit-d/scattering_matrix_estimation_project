@@ -6,8 +6,6 @@ run run_parmeters.m
 
 %% Simulate random scattering matrices
 S0 = eye(param.sys.dim_S);
-S0(2,2) = 1-1i*1;
-S0(3,3) = 1i;
 Sk = generate_scattering_matrices(S0, param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
 xk = scattering_matrices_to_states(Sk);
 Sk2 = states_to_scattering_matrices(xk);

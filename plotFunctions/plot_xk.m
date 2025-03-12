@@ -5,8 +5,8 @@ Sk = states_to_scattering_matrices(xk);
 
 figure("Name","States");
 for i=1:param.sys.dim_S^2
-    row = mod(i-1, param.sys.dim_S) + 1;
-    col = ceil(i / param.sys.dim_S);
+    col = mod(i-1, param.sys.dim_S) + 1;
+    row = ceil(i / param.sys.dim_S);
 
     subplot(param.sys.dim_S, param.sys.dim_S, i);
     plot(param.sim.t, real(squeeze(Sk(row,col,:))));
