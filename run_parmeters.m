@@ -1,23 +1,28 @@
 %% Dimensionalities
-param_sys.dim_S = 3; % row/column dimensionality of S
+param.sys.dim_S = 3; % row/column dimensionality of S
 
-param_sys.n = 2 * param_sys.dim_S^2; % dimensionality of x
-param_sys.p = param_sys.n; % dimensionality of v
-param_sys.m = param_sys.n; % dimensionality of y
-param_sys.k = param_sys.m; % dimensionlity of w
+param.sys.n = 2 * param.sys.dim_S^2; % dimensionality of x
+param.sys.p = param.sys.n; % dimensionality of v
+param.sys.m = param.sys.n; % dimensionality of y
+param.sys.k = param.sys.m; % dimensionlity of w
 
 %% Simulation parameters
-param_sim.T = 1; % simulation duration in sec
-param_sim.Ts = 1e-2; % sample time in sec
-param_sim.t = 0:param_sim.Ts:param_sim.T; % time vector
-param_sim.dim_t = length(param_sim.t);
+param.sim.T = 1; % simulation duration in sec
+param.sim.Ts = 1e-2; % sample time in sec
+param.sim.t = 0:param.sim.Ts:param.sim.T; % time vector
+param.sim.dim_t = length(param.sim.t);
 
 %% Observer parameters
-param_obs.A = zeros(param_sys.n); % observer only assumes noise is measured
-param_obs.B = eye(param_sys.n);
-param_obs.N = param_sys.dim_S; % number of sensors
-param_obs.C = eye(param_sys.n);
-param_obs.D = zeros(param_sys.n); % assuming there is no output noise
+param.obs.A = zeros(param.sys.n); % observer only assumes noise is measured
+param.obs.B = eye(param.sys.n);
+param.obs.N = param.sys.dim_S; % number of sensors
+
+param.obs.C = zeros(param.sys.dim_S, 2*param.sys.dim_S^2, param.obs.N);
+for i=1:param.obs.N
+    param.obs.C(:,param.sys.dim_S*(i-1)+1:param.sys.dim_S*i,i) = eye(param.sys.dim_S);
+    param.obs.C(:,param.sys.dim_S*(i+param.obs.N-1)+1:param.sys.dim_S*(i+param.obs.N),i) = 1i*eye(param.sys.dim_S);
+end
+param.obs.D = zeros(param.sys.n); % assuming there is no output noise
 
 %% Scheduling optimization parameter
-param_sch.P0 = diag(ones(param_sys.n,1));
+param.sch.P0 = diag(ones(param.sys.n,1));

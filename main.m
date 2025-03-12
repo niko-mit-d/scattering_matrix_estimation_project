@@ -5,18 +5,33 @@ addpath(genpath("."));
 run run_parmeters.m
 
 %% Simulate random scattering matrices
-Sk = generate_scattering_matrices(param_sys.dim_S, param_sim.dim_t, "checkProperties", true);
+Sk = generate_scattering_matrices(param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
 xk = scattering_matrices_to_states(Sk);
 Sk2 = states_to_scattering_matrices(xk);
-Sk == Sk2
 
+%% Calculate sensor schedule
 
+% Sample
+random_sample = false;
+
+if random_sample
+    % n_measurements = 4;
+    % u = randi(param.obs.N, n_measurements,1);
+    % tau = randn(n_measurements, 1) * param.sim.T;
+else
+    tau = 0:0.25:0.75 * param.sim.T;
+    uk = [2, 1, 3, 2];
+end
+
+yk = evaluate_y(xk, tau, uk, param);
+
+plot(param.sim.t, yk);
 %%
 figure;
-for i=1:param_sys.dim_S^2
-    subplot(param_sys.dim_S, param_sys.dim_S, i);
-    plot(param_sim.t, xk(i,:));
+for i=1:param.sys.dim_S^2
+    subplot(param.sys.dim_S, param.sys.dim_S, i);
+    plot(param.sim.t, xk(i,:));
     hold on;
-    plot(param_sim.t, xk(i+param_sys.dim_S,:));
+    plot(param.sim.t, xk(i+param.sys.dim_S,:));
     legend("Re", "Im");
 end
