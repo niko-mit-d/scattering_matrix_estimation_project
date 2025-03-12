@@ -21,7 +21,7 @@ if random_sample
     % tau = randn(n_measurements, 1) * param.sim.T;
 else
     tau = 0:0.25:0.75 * param.sim.T;
-    uk = [2, 1, 3, 2];
+    uk = [1, 2, 3, 2];
 end
 
 yk = evaluate_y(xk, tau, uk, param);
@@ -29,4 +29,6 @@ yk = evaluate_y(xk, tau, uk, param);
 % plot(param.sim.t, real(yk));
 plot_schedule(tau, uk, param);
 %%
-plot_xk(xk, param);
+% TODO: Check if row and columns are correctly implemented
+% plot_xk(xk, param);
+plot_xk_overlayed_with_yk(xk, yk, param);
