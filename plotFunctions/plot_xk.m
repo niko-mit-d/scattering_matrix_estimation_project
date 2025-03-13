@@ -3,7 +3,7 @@ function plot_xk(xk, param)
 
 Sk = states_to_scattering_matrices(xk);
 
-figure("Name","States");
+figure("Name","States", "Units", "normalized", "Position", [0.2 0.2 0.6 0.6]);
 for i=1:param.sys.dim_S^2
     col = mod(i-1, param.sys.dim_S) + 1;
     row = ceil(i / param.sys.dim_S);

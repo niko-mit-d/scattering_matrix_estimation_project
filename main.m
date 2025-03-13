@@ -29,6 +29,5 @@ yk = evaluate_y(xk, tau, uk, param);
 % plot(param.sim.t, real(yk));
 plot_schedule(tau, uk, param);
 %%
-% TODO: Check if row and columns are correctly implemented
 % plot_xk(xk, param);
 plot_xk_overlayed_with_yk(xk, yk, param);
