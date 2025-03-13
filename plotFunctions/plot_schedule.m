@@ -1,7 +1,7 @@
 function plot_schedule(tau, uk, param)
 %PLOT_SCHEDULE Summary of this function goes here
 %   Detailed explanation goes here
-tau = [tau, param.sim.T];
+tau = [0, cumsum(tau)];
 uk = [uk, 0];
 
 stairs(tau,uk);

@@ -1,10 +1,12 @@
-%% Dimensionalities
+%% System parameters
 param.sys.dim_S = 3; % row/column dimensionality of S
+param.sys.S0 = eye(param.sys.dim_S);
 
 param.sys.n = 2 * param.sys.dim_S^2; % dimensionality of x
 param.sys.p = param.sys.n; % dimensionality of v
 param.sys.m = param.sys.n; % dimensionality of y
 param.sys.k = param.sys.m; % dimensionlity of w
+param.sys.x_0 = scattering_matrices_to_states(param.sys.S0);
 
 %% Simulation parameters
 param.sim.T = 1; % simulation duration in sec
@@ -13,6 +15,9 @@ param.sim.t = 0:param.sim.Ts:param.sim.T; % time vector
 param.sim.dim_t = length(param.sim.t);
 
 %% Observer parameters
+param.obs.K = [1e-1;1e-3];
+param.obs.x_hat_0 = param.sys.x_0; % same initial conditions for now!
+
 param.obs.A = zeros(param.sys.n); % observer only assumes noise is measured
 param.obs.B = eye(param.sys.n);
 param.obs.N = param.sys.dim_S; % number of sensors

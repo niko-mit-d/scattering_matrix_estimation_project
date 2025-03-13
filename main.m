@@ -5,8 +5,7 @@ addpath(genpath("."));
 run run_parmeters.m
 
 %% Simulate random scattering matrices
-S0 = eye(param.sys.dim_S);
-Sk = generate_scattering_matrices(S0, param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
+Sk = generate_scattering_matrices(param.sys.S0, param.sys.dim_S, param.sim.dim_t, "checkProperties", true);
 xk = scattering_matrices_to_states(Sk);
 Sk2 = states_to_scattering_matrices(xk);
 
@@ -20,10 +19,13 @@ if random_sample
     % u = randi(param.obs.N, n_measurements,1);
     % tau = randn(n_measurements, 1) * param.sim.T;
 else
-    tau = 0:0.25:0.75 * param.sim.T;
+    tau = param.sim.T/4*ones(1,4);
     uk = [1, 2, 3, 2];
 end
 yk = evaluate_y(xk, tau, uk, param);
 
-% plot_schedule(tau, uk, param);
+%plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
+%%
+x_hat = run_observer(yk, tau, uk, param);
+plot_xk(x_hat, param);
