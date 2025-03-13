@@ -15,7 +15,7 @@ param.sim.t = 0:param.sim.Ts:param.sim.T; % time vector
 param.sim.dim_t = length(param.sim.t);
 
 %% Observer parameters
-param.obs.K = [1e-1;1e-3];
+param.obs.K = [2;1]*10;
 param.obs.x_hat_0 = param.sys.x_0; % same initial conditions for now!
 
 param.obs.A = zeros(param.sys.n); % observer only assumes noise is measured

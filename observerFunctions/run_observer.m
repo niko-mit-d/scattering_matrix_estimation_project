@@ -11,7 +11,8 @@ for i=2:param.sim.dim_t
     dhdx = numerical_jacobian(@(x)constraint_combined(x,param), x_hat(:,i-1));
     A(:,2) = h'*dhdx;
     
-    x_hat(:,i) = -pinv(A')*param.obs.K;
+    f = -pinv(A')*param.obs.K;
+    x_hat(:,i) = x_hat(:,i-1)+f*param.sim.Ts;
 end
 
 end

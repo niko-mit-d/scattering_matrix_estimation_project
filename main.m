@@ -28,4 +28,4 @@ yk = evaluate_y(xk, tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
 %%
 x_hat = run_observer(yk, tau, uk, param);
-plot_xk(x_hat, param);
+plot_observer_results(x_hat, xk, param);
