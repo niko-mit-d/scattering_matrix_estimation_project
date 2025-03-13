@@ -17,10 +17,10 @@ param.obs.A = zeros(param.sys.n); % observer only assumes noise is measured
 param.obs.B = eye(param.sys.n);
 param.obs.N = param.sys.dim_S; % number of sensors
 
-param.obs.C = zeros(param.sys.dim_S, 2*param.sys.dim_S^2, param.obs.N);
+param.obs.C = zeros(2*param.sys.dim_S, 2*param.sys.dim_S^2, param.obs.N);
 for i=1:param.obs.N
-    param.obs.C(:,param.sys.dim_S*(i-1)+1:param.sys.dim_S*i,i) = eye(param.sys.dim_S);
-    param.obs.C(:,param.sys.dim_S*(i+param.obs.N-1)+1:param.sys.dim_S*(i+param.obs.N),i) = 1i*eye(param.sys.dim_S);
+    param.obs.C(1:param.sys.dim_S,param.sys.dim_S*(i-1)+1:param.sys.dim_S*i,i) = eye(param.sys.dim_S);
+    param.obs.C(param.sys.dim_S+1:end,param.sys.dim_S*(i+param.obs.N-1)+1:param.sys.dim_S*(i+param.obs.N),i) = eye(param.sys.dim_S);
 end
 param.obs.D = zeros(param.sys.n); % assuming there is no output noise
 

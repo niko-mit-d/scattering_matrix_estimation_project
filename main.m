@@ -23,11 +23,7 @@ else
     tau = 0:0.25:0.75 * param.sim.T;
     uk = [1, 2, 3, 2];
 end
-
 yk = evaluate_y(xk, tau, uk, param);
 
-% plot(param.sim.t, real(yk));
-plot_schedule(tau, uk, param);
-%%
-% plot_xk(xk, param);
-plot_xk_overlayed_with_yk(xk, yk, param);
+% plot_schedule(tau, uk, param);
+% plot_xk_overlayed_with_yk(xk, yk, param);
