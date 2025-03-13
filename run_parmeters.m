@@ -1,5 +1,5 @@
 %% Dimensionalities
-param.sys.dim_S = 4; % row/column dimensionality of S
+param.sys.dim_S = 3; % row/column dimensionality of S
 
 param.sys.n = 2 * param.sys.dim_S^2; % dimensionality of x
 param.sys.p = param.sys.n; % dimensionality of v
