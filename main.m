@@ -27,3 +27,6 @@ yk = evaluate_y(xk, tau, uk, param);
 
 % plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
+
+%%
+constraint_symmetry(xk, param);

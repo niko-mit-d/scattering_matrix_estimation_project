@@ -4,6 +4,7 @@ function Sk = states_to_scattering_matrices(xk)
 dim_S = sqrt(size(xk,1)/2);
 if mod(dim_S,1)~=0
     fprintf("states_to_scattering_matrices >> xk is not of correct size!\n");
+    return;
 end
 
 xk_real = xk(1:end/2,:);
