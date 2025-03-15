@@ -15,7 +15,7 @@ Sk = zeros(dim_S, dim_S, n);
 Sk(:,:,1) = S0;
 for i=2:n
     % generate a random complex symmetric matrix
-    A = 0.1*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
+    A = .1*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
     A = (A + A.') / 2; % Make it symmetric (S = S^T)
     
     % ensure S is unitary (S^H * S = I)

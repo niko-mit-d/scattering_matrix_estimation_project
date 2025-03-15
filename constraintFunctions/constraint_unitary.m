@@ -1,6 +1,7 @@
-function hu = constraint_unitary(x,param)
+function [hu, dhudx] = constraint_unitary(x,param)
 %CONSTRAINT_UNITARY Implements the symmetry constraint hu
 hu = zeros(param.sys.dim_S*(param.sys.dim_S+1)/2, size(x,2));
+dhudx = zeros(size(hu,1), param.sys.n);
 
 % The constraint is calculated after transformation to matrices. Easier to
 % understand this way.

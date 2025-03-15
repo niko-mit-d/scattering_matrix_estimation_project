@@ -7,12 +7,17 @@ k = piecewise_constant(tau, uk, param); % active sensor at time t
 
 for i=2:param.sim.dim_t
     A(:,1) = -(yk(:,i)-param.obs.C(:,:,k(i))*x_hat(:,i-1))'*param.obs.C(:,:,k(i));
-    h = constraint_combined(x_hat(:,i-1),param);
-    dhdx = numerical_jacobian(@(x)constraint_combined(x,param), x_hat(:,i-1));
+    [h,dhdx] = constraint_combined(x_hat(:,i-1),param);
+    % dhdx = numerical_jacobian(@(x)constraint_combined(x,param), x_hat(:,i-1));
     A(:,2) = h'*dhdx;
+    
     
     f = -pinv(A')*param.obs.K;
     x_hat(:,i) = x_hat(:,i-1)+f*param.sim.Ts;
+
+    if norm(x_hat(:,i) - x_hat(:,i-1))>1
+        fprintf("Index %d: dhdx\n", i);
+    end
 end
 
 end

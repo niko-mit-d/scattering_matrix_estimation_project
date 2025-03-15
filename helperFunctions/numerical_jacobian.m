@@ -1,7 +1,7 @@
 function jac = numerical_jacobian(func,x)
 %NUMERICAL_JACOBIAN Uses numeric gradient to calculate Jacobian of given
 %function func around point x using the complex step method
-h= 1e-10;
+h= 1e-4;
 n = length(x);
 fx = func(x);
 jac = zeros(length(fx), n);
