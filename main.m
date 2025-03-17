@@ -20,7 +20,7 @@ if random_sample
     % tau = randn(n_measurements, 1) * param.sim.T;
 else
     tau = param.sim.T/4*ones(1,4);
-    uk = [1, 2, 3, 1];
+    uk = [1, 1, 1, 1];
     % uk = repmat(uk,1, 10);
     % tau = param.sim.T/length(uk)*ones(1, length(uk));
 end
