@@ -29,5 +29,19 @@ yk = evaluate_y(xk, tau, uk, param);
 %plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
 %%
-x_hat = run_observer(yk, tau, uk, param);
-plot_observer_results(x_hat, xk, param);
+[x_hat, h_hat] = run_observer(yk, tau, uk, param);
+% plot_observer_results(x_hat, xk, param);
+
+%%
+h = zeros(2, param.sim.dim_t);
+for i=1:param.sim.dim_t
+    % [h(:,i), ~] = constraint_combined(xk(:,i),param);
+    Skk = states_to_scattering_matrices(x_hat(:,i));
+
+    h_norm(1,i) = norm(Skk-Skk.');
+    h_norm(2,i) = norm(Skk' * Skk - eye(size(Skk)));
+end
+
+plot_performance(xk,x_hat,h_norm,param);
+
+% plot_h_norm(h, param);
