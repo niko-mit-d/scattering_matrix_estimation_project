@@ -28,7 +28,7 @@ for k=0:param.sys.dim_S-1
             dhudx(index,end/2+p+l*param.sys.dim_S) = dhudx(index,end/2+p+l*param.sys.dim_S) + x(end/2+p+k*param.sys.dim_S);
         end
         if k==l
-            hu(index) = hu(index) + 1;
+            hu(index) = hu(index) - 1;
         end
         index = index + 1;
     end
