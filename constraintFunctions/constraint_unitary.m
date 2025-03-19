@@ -20,9 +20,12 @@ for k=0:param.sys.dim_S-1
         % diagonal.
         for p=1:param.sys.dim_S
             hu(index) = hu(index) + x(p+k*param.sys.dim_S)*x(p+l*param.sys.dim_S) + ...
-                x(param.sys.n/2-1 +p+k*param.sys.dim_S)*x(param.sys.n/2-1 +p+l*param.sys.dim_S);
-            dhudx(index,p+k*param.sys.dim_S) = x(p+l*param.sys.dim_S);
-            dhudx(index,p+l*param.sys.dim_S) = x(p+k*param.sys.dim_S);
+                x(param.sys.n/2+p+k*param.sys.dim_S)*x(param.sys.n/2+p+l*param.sys.dim_S);
+
+            dhudx(index,p+k*param.sys.dim_S) = dhudx(index,p+k*param.sys.dim_S) + x(p+l*param.sys.dim_S);
+            dhudx(index,p+l*param.sys.dim_S) = dhudx(index,p+l*param.sys.dim_S) + x(p+k*param.sys.dim_S);
+            dhudx(index,end/2+p+k*param.sys.dim_S) = dhudx(index,end/2+p+k*param.sys.dim_S) + x(end/2+p+l*param.sys.dim_S);
+            dhudx(index,end/2+p+l*param.sys.dim_S) = dhudx(index,end/2+p+l*param.sys.dim_S) + x(end/2+p+k*param.sys.dim_S);
         end
         if k==l
             hu(index) = hu(index) + 1;
@@ -30,7 +33,5 @@ for k=0:param.sys.dim_S-1
         index = index + 1;
     end
 end
-% same for imaginary part of x
-dhudx(:, param.sys.n/2+1:end) = dhudx(:, 1:param.sys.n/2); 
 end
 
