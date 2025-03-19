@@ -13,8 +13,10 @@ for i=1:param.sys.dim_S^2
     grid on;
     hold on;
     plot(param.sim.t, imag(squeeze(Sk(row,col,:))));
-    title("S("+row+","+col+")");
-    legend("Re", "Im");
+    title("$S_{"+row+","+col+"} \equiv x_"+(row+(col-1)*param.sys.dim_S)+"$", "Interpreter","latex");
+    if i == 1
+    legend("$Re(x)$", "$Im(x)$","Interpreter","latex");
+    end
     if(i>=param.sys.dim_S^2-param.sys.dim_S)
         xlabel("t in sec");
     end

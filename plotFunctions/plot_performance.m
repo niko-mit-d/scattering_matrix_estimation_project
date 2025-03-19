@@ -9,12 +9,12 @@ end
 figure;
 subplot(1,2,1);
 plot(param.sim.t,abs(x-x_hat)); grid on;
-title("||x-x_{hat}||");
+title("$\vert\vert x-\hat{x} \vert\vert$", "Interpreter","latex");
 xlabel("t in sec");
 
 subplot(1,2,2);
 plot(param.sim.t, h_norm); grid on;
-legend(["h_s", "h_u"]);
-title("||h(t)||");
+legend(["$h_s$", "$h_u$"]);
+title("$\vert\vert h(t) \vert\vert$");
 end
 
