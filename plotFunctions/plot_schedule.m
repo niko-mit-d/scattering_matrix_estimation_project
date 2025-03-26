@@ -4,6 +4,7 @@ function plot_schedule(tau, uk, param)
 tau = [0, cumsum(tau)];
 uk = [uk, 0];
 
+figure("Name","Sensor schedule");
 stairs(tau,uk);
 xlim([0 param.sim.T]);
 ylim([1 param.obs.N]);

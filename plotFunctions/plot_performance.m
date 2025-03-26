@@ -1,20 +1,20 @@
-function plot_performance(x,x_hat,param)
+function plot_performance(x,x_hat,param,window_title)
 %PLOT_PERFORMANCE Summary of this function goes here
+constraint_symmetry(x_hat, param);
+
 for i=1:param.sim.dim_t
-    Skk = states_to_scattering_matrices(x_hat(:,i));
-    h_norm(1,i) = norm(Skk-Skk.');
-    h_norm(2,i) = norm(Skk' * Skk - eye(size(Skk)));
+    h_norm(1,i) = vecnorm(constraint_symmetry(x_hat(:,i), param),2);
+    h_norm(2,i) = vecnorm(constraint_unitary(x_hat(:,i), param),2);
 end
 
-figure;
-subplot(1,2,1);
-plot(param.sim.t,abs(x-x_hat)); grid on;
-title("$\vert\vert x-\hat{x} \vert\vert$", "Interpreter","latex");
-xlabel("t in sec");
-
-subplot(1,2,2);
+figure("Name",window_title);
+plot(param.sim.t,vecnorm(x-x_hat,2)); grid on;
+title("Observer error measures");
+hold on;
 plot(param.sim.t, h_norm); grid on;
-legend(["$h_s$", "$h_u$"]);
-title("$\vert\vert h(t) \vert\vert$");
+legend(["State error $\vert\vert x - \hat{x} \vert\vert_2$","$\vert\vert h_s \vert\vert_2$", "$\vert\vert h_u \vert\vert_2$"], ...
+    "Location","northwest");
+ylabel("Error");
+xlabel("t in sec");
 end
 

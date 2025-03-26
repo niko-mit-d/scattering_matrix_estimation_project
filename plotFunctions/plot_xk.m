@@ -13,7 +13,8 @@ for i=1:param.sys.dim_S^2
     grid on;
     hold on;
     plot(param.sim.t, imag(squeeze(Sk(row,col,:))));
-    title("$S_{"+row+","+col+"} \equiv x_"+(row+(col-1)*param.sys.dim_S)+"$", "Interpreter","latex");
+    idx2 = (row+(col-1)*param.sys.dim_S + param.sys.dim_S^2);
+    title("$S_{"+row+","+col+"} \equiv x_{"+(row+(col-1)*param.sys.dim_S)+"}+ i x_{"+idx2+"} $", "Interpreter","latex");
     if i == 1
     legend("$Re(x)$", "$Im(x)$","Interpreter","latex");
     end

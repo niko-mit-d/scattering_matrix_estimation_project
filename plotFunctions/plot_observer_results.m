@@ -11,8 +11,8 @@ for i=1:param.sys.dim_S^2
     row = ceil(i / param.sys.dim_S);
 
 
-    plot(param.sim.t, real(squeeze(S_hat(row,col,:))),"--", "DisplayName","$Re(\hat{x})$");
-    plot(param.sim.t, imag(squeeze(S_hat(row,col,:))),"--", "DisplayName","$Im(\hat{x})$");
+    plot(param.sim.t, real(squeeze(S_hat(row,col,:))), ":", "DisplayName","$Re(\hat{x})$", "Color", "#0072BD");
+    plot(param.sim.t, imag(squeeze(S_hat(row,col,:))), ":","DisplayName","$Im(\hat{x})$", "Color", "#D95319");
 end
 end
 
