@@ -2,7 +2,7 @@ function plot_observer_results(x_hat, xk, param)
 %PLOT_OBSERVER_RESULTS Summary of this function goes here
 %   Detailed explanation goes here
 plot_xk(xk,param);
-S_hat = states_to_scattering_matrices(x_hat);
+S_hat = states_to_scattering_matrices(x_hat,param);
 
 hold on;
 for i=1:param.sys.dim_S^2

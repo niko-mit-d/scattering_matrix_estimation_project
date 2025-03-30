@@ -3,7 +3,7 @@ function yk = evaluate_y(xk, tau, uk, param)
 %the schedule (tau,uk) passed.
 n_measurements = length(uk);
 switching_times = [0, cumsum(tau)];
-yk = zeros(size(param.obs.C,1), param.sim.dim_t);
+yk = zeros(2*param.obs.N, param.sim.dim_t);
 
 for i=1:n_measurements
     yk(:,param.sim.t>=switching_times(i)) = param.obs.C(:,:,uk(i))*xk(:,param.sim.t>=switching_times(i));

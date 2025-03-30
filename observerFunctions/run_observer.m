@@ -15,9 +15,9 @@ k = piecewise_constant(tau, uk, param); % active sensor at time t
 h_hat = zeros(param.obs.c, param.sim.dim_t);
 
 for i=2:param.sim.dim_t
-    A(:,1) = -(yk(:,i)-param.obs.C(:,:,k(i))*x_hat(:,i-1))'*param.obs.C(:,:,k(i));
-    [h,dhdx] = constraint_combined(x_hat(:,i-1),param);
-    A(:,2) = h'*dhdx;
+    A(:,1) = (param.obs.C(:,:,k(i))*x_hat(:,i-1)-yk(:,i)).'*param.obs.C(:,:,k(i));
+    [h,dhdx] = constraint_unitary(x_hat(:,i-1),param);
+    A(:,2) = h.'*dhdx;
 
     f = -pinv(A')*param.obs.K;
     x_hat(:,i) = x_hat(:,i-1)+f*param.sim.Ts;

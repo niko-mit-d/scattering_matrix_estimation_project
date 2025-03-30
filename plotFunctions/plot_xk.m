@@ -1,7 +1,7 @@
 function plot_xk(xk, param)
 %UNTITLED Summary of this function goes here
 
-Sk = states_to_scattering_matrices(xk);
+Sk = states_to_scattering_matrices(xk, param);
 
 figure("Name","States", "Units", "normalized", "Position", [0.2 0.2 0.6 0.6]);
 for i=1:param.sys.dim_S^2
@@ -14,7 +14,8 @@ for i=1:param.sys.dim_S^2
     hold on;
     plot(param.sim.t, imag(squeeze(Sk(row,col,:))));
     idx2 = (row+(col-1)*param.sys.dim_S + param.sys.dim_S^2);
-    title("$S_{"+row+","+col+"} \equiv x_{"+(row+(col-1)*param.sys.dim_S)+"}+ i x_{"+idx2+"} $", "Interpreter","latex");
+    % title("$S_{"+row+","+col+"} \equiv x_{"+(row+(col-1)*param.sys.dim_S)+"}+ i x_{"+idx2+"} $", "Interpreter","latex");
+    title("$S_{"+row+","+col+"}$", "Interpreter","latex");
     if i == 1
     legend("$Re(x)$", "$Im(x)$","Interpreter","latex");
     end

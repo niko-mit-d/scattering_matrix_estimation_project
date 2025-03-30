@@ -6,7 +6,7 @@ dhsrdx = zeros(size(hsr,1), param.sys.n);
 
 % The constraint is calculated after transformation to matrices. Easier to
 % understand this way.
-S = states_to_scattering_matrices(x);
+S = states_to_scattering_matrices(x, param);
 S_trans = pagetranspose(S); % does non-conjugate tranpose on each S(:,:,i) matrix 
 diff_S = S - S_trans;
 
