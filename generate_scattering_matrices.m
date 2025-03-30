@@ -1,26 +1,30 @@
-function Sk = generate_scattering_matrices(S0, dim_S, n, options)
+function [Sk,Sk_true] = generate_scattering_matrices(param, options)
 % generate_scattering_matrices Generates n random scattering matrices of
 % dimensionality dim_S that satisfy both the symmetric and unitary
 % properties.
 %
 % Sk is of size (dim_S, dim_S, n)
 arguments
-    S0 (:,:) double;
-    dim_S double {mustBeInteger, mustBePositive};
-    n double {mustBeInteger, mustBePositive};
+    param struct;
     options.checkProperties logical = false;
 end
+S0 = param.sys.S0;
+dim_S = param.sys.dim_S;
+n = param.sim.dim_t;
 
-Sk = zeros(dim_S, dim_S, n);
-Sk(:,:,1) = S0;
+Sk_true = zeros(dim_S, dim_S, n);
+Sk = zeros(size(Sk_true));
+Sk_true(:,:,1) = S0;
+Sk(:,:,1) = S0 + param.sys.sigma_y*randn(dim_S);
 for i=2:n
-    A = .1*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
+    A = .05*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
     A = (A + A.') / 2; % make it symmetric (S = S^T)
     
     [U, ~, V] = svd(A);
     A = U * V'; % construct a unitary symmetric matrix
 
-    Sk(:,:,i) = A;
+    Sk_true(:,:,i) = A;
+    Sk(:,:,i) = Sk_true(:,:,i) + param.sys.sigma_y*randn(dim_S);
 end
 
 if options.checkProperties
@@ -41,4 +45,5 @@ if options.checkProperties
         end
     end
 end
+
 end

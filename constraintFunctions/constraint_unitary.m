@@ -21,7 +21,7 @@ idx = 1;
 
 % diagonal elements (normalization constraints)
 for i=1:s
-    hu(idx) = hu_mat(i,i);
+    hu(idx) = abs(hu_mat(i,i));
 
     for k=1:s
         [idx_re, idx_im] = S_elem_to_idx(k,i,param);
@@ -37,7 +37,7 @@ for i=1:s
     for j=i+1:s
         % This constraint is equal to the i-th column of S being
         % orthonormal to the j-th column of S_hermitian
-        hu(idx) = hu_mat(i,j);
+        hu(idx) = abs(hu_mat(i,j));
 
         for k=1:s
             [idx_re_i, idx_im_i] = S_elem_to_idx(k,i,param);
