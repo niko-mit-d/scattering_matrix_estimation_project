@@ -24,15 +24,15 @@ for i=2:n
     A = U * V'; % construct a unitary symmetric matrix
 
     Sk_true(:,:,i) = A;
-    Sk(:,:,i) = Sk_true(:,:,i) + param.sys.sigma_y*randn(dim_S);
+    Sk(:,:,i) = Sk_true(:,:,i) + param.sys.sigma_y*(randn(dim_S)+1i*randn(dim_S));
 end
 
 if options.checkProperties
     % check if matrices are symmetric and unitary
     threshold = 1e-10;
     for i=1:n
-        isSymmetric = norm(Sk(:,:,i) - Sk(:,:,i).') < threshold; % non-conjugate tranpose used here
-        isUnitary = norm(Sk(:,:,i)'*Sk(:,:,i) - eye(dim_S)) < threshold;
+        isSymmetric = norm(Sk_true(:,:,i) - Sk_true(:,:,i).') < threshold; % non-conjugate tranpose used here
+        isUnitary = norm(Sk_true(:,:,i)'*Sk_true(:,:,i) - eye(dim_S)) < threshold;
 
         if(isSymmetric && isUnitary)
             if i==n
