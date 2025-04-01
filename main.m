@@ -10,29 +10,14 @@ run run_parmeters.m
 xk = scattering_matrices_to_states(Sk, param);
 xk_true = scattering_matrices_to_states(Sk_true, param);
 %% Calculate sensor schedule
-% Sample
-random_sample = false;
-if random_sample
-    % n_measurements = 4;
-    % u = randi(param.obs.N, n_measurements,1);
-    % tau = randn(n_measurements, 1) * param.sim.T;
-else
-    cycles = 50;
-    tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
-    uk = repmat(1:param.obs.N,1,cycles);
-end
+% cycling through all sensor
+cycles = 50;
+tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
+uk = repmat(1:param.obs.N,1,cycles);
+
 yk = evaluate_y(xk, tau, uk, param);
 % plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
-
-%% Running observer with not optimized values
-% run run_parmeters.m
-% [x_hat, ~] = run_observer(yk, tau, uk, param, "printDetails", false);
-% plot_performance(xk,x_hat,param, "Non-optimized parameters");
-% plot_observer_results(x_hat, xk, param);
-% fprintf("Not optmized Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
-% fprintf("Not optmized K vector: [%.2f; %.2f]\n\n", param.obs.K(1), param.obs.K(2));
-
 %% Optimization to find suiting Ki parameters
 opt_technique = -1;
 
@@ -68,5 +53,5 @@ end
 plot_performance(xk,x_hat,param, "Optimized parameters");
 % plot_observer_results(x_hat, xk, param);
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);
-fprintf("Optmized Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
-fprintf("Optmized K vector: [%.2f; %.2f]\n", param.obs.K(1), param.obs.K(2));
+fprintf("Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
+fprintf("Optimized K vector: [%.2f; %.2f]\n", param.obs.K(1), param.obs.K(2));

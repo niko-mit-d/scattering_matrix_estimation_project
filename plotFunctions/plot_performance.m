@@ -1,7 +1,5 @@
 function plot_performance(x,x_hat,param,window_title)
 %PLOT_PERFORMANCE Summary of this function goes here
-constraint_symmetry(x_hat, param);
-
 for i=1:param.sim.dim_t
     h_norm(1,i) = vecnorm(constraint_symmetry(x_hat(:,i), param),2);
     h_norm(2,i) = vecnorm(constraint_unitary(x_hat(:,i), param),2);

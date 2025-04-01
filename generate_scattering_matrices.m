@@ -1,9 +1,11 @@
 function [Sk,Sk_true] = generate_scattering_matrices(param, options)
 % generate_scattering_matrices Generates n random scattering matrices of
-% dimensionality dim_S that satisfy both the symmetric and unitary
+% dimensionality param.sys.dim_S that satisfy both the symmetric and unitary
 % properties.
 %
-% Sk is of size (dim_S, dim_S, n)
+% Sk is of size (dim_S, dim_S, n) and has added random noise.
+% Sk_true returns the "reine" scattering matrices which satisfy the
+% constraints.
 arguments
     param struct;
     options.checkProperties logical = false;
@@ -17,7 +19,7 @@ Sk = zeros(size(Sk_true));
 Sk_true(:,:,1) = S0;
 Sk(:,:,1) = S0 + param.sys.sigma_y*randn(dim_S);
 for i=2:n
-    A = .05*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
+    A = param.sys.sigma_S*(randn(dim_S) + 1i * randn(dim_S)) + Sk(:,:,i-1);
     A = (A + A.') / 2; % make it symmetric (S = S^T)
     
     [U, ~, V] = svd(A);
