@@ -49,7 +49,7 @@ switch opt_technique
         % take from run_parameters
 end
 
-[x_hat, ~] = run_observer(yk, tau, uk, param, "printDetails", false);
+[x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
 plot_performance(xk,x_hat,param, "Optimized parameters");
 % plot_observer_results(x_hat, xk, param);
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);

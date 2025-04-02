@@ -19,7 +19,7 @@ for i=2:param.sim.dim_t
     [h,dhdx] = constraint_unitary(x_hat(:,i-1),param);
     A(:,2) = h.'*dhdx;
 
-    f = -pinv(A')*param.obs.K;
+    f = -pinv(A.')*param.obs.K;
     x_hat(:,i) = x_hat(:,i-1)+f*param.sim.Ts;
     h_hat(:,i) = h;
 
