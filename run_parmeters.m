@@ -34,8 +34,9 @@ param.obs.A = zeros(param.sys.n); % observer only assumes noise is measured
 param.obs.B = eye(param.sys.n);
 param.obs.N = param.sys.dim_S; % number of sensors
 param.obs.c = param.sys.dim_S*(param.sys.dim_S+1)/2; % dimensionality of constraints
+param.obs.dim_y = 2*param.sys.dim_S;
 
-param.obs.C = zeros(2*param.sys.dim_S, param.sys.n, param.obs.N);
+param.obs.C = zeros(param.obs.dim_y, param.sys.n, param.obs.N);
 % C(:,:,i) * x returns the i-th column of S
 for i=1:param.obs.N
     for k=1:param.sys.dim_S
@@ -49,6 +50,18 @@ for i=1:param.obs.N
 end
 clear i k idx_re idx_im;
 param.obs.D = zeros(param.sys.n); % assuming there is no output noise
+
+%% Kalman filter parameters
+% --- adjust these
+param.kal.x_hat_0 = param.sys.x_0; % same initial conditions for now!
+param.kal.P0 = 10*eye(param.sys.n);
+
+param.kal.Q = 1*eye(param.sys.n);
+param.kal.R = 10*eye(param.obs.dim_y + param.obs.c);
+% ---
+
+param.kal.F = zeros(param.sys.n);
+param.kal.C = param.obs.C;
 %% K Optimization parameters
 % --- adjust these
 param.opt.K0 = param.obs.K; % initial guess
