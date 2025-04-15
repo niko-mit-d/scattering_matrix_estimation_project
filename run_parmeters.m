@@ -3,7 +3,8 @@
 param.sys.dim_S = 3; % row/column dimensionality of S
 param.sys.S0 = eye(param.sys.dim_S);
 param.sys.sigma_y = 0.05; % standard deviation of noise added to measurement y
-param.sys.sigma_S = 0.02; % standard deviation of random scattering matrix elements added to S each timestep
+% param.sys.sigma_S = 0.02; % standard deviation of random scattering matrix elements added to S each timestep
+param.sys.sigma_S = 0.0001;
 % ---
 
 param.sys.n = 2 * param.sys.dim_S^2 - param.sys.dim_S*(param.sys.dim_S-1); % dimensionality of x
@@ -53,15 +54,20 @@ param.obs.D = zeros(param.sys.n); % assuming there is no output noise
 
 %% Kalman filter parameters
 % --- adjust these
-param.kal.x_hat_0 = param.sys.x_0; % same initial conditions for now!
-param.kal.P0 = 10*eye(param.sys.n);
+param.kal.x_hat_0 = [param.sys.x_0; zeros(param.sys.n,1)]; % same initial conditions for now!
+param.kal.P0 = .1*eye(2*param.sys.n);
 
-param.kal.Q = 1*eye(param.sys.n);
-param.kal.R = 10*eye(param.obs.dim_y + param.obs.c);
+param.kal.Q = .01*eye(2*param.sys.n);
+% param.kal.R = 1*eye(param.obs.dim_y + param.obs.c);
+param.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
 % ---
 
-param.kal.F = zeros(param.sys.n);
-param.kal.C = param.obs.C;
+% param.kal.F = zeros(param.sys.n);
+param.kal.F = [eye(param.sys.n), eye(param.sys.n); zeros(param.sys.n), eye(param.sys.n)];
+param.kal.C = zeros(param.obs.dim_y, 2*param.sys.n, param.obs.N);
+for i=1:param.obs.N
+    param.kal.C(:,:,i) = [param.obs.C(:,:,i), zeros(param.obs.dim_y, param.sys.n)];
+end
 %% K Optimization parameters
 % --- adjust these
 param.opt.K0 = param.obs.K; % initial guess

@@ -11,7 +11,7 @@ xk = scattering_matrices_to_states(Sk, param);
 xk_true = scattering_matrices_to_states(Sk_true, param);
 %% Calculate sensor schedule
 % cycling through all sensor
-cycles = 10;
+cycles = 40;
 tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
 uk = repmat(1:param.obs.N,1,cycles);
 
@@ -49,10 +49,8 @@ switch opt_technique
         % take from run_parameters
 end
 
-% [x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
-[x_hat, h_hat] = run_PM_kalman(yk, tau, uk, param);
-
-
+[x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
+% [x_hat, h_hat] = run_PM_kalman(yk, tau, uk, param);
 plot_performance(xk,x_hat,param, "Optimized parameters");
 % plot_observer_results(x_hat, xk, param);
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);
