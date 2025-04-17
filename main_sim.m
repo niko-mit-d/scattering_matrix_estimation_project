@@ -1,4 +1,4 @@
-clc;
+clc; clear all;
 addpath(genpath("."));
 set(groot, 'defaultAxesTickLabelInterpreter','latex'); set(groot, 'defaultLegendInterpreter','latex');
 set(groot, 'defaultTextInterpreter','latex');
@@ -14,6 +14,7 @@ sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim
 sys_spec.sys.sigma_y = 0.05;
 sys_spec.sys.sigma_S = 0.0001;
 
+sys_spec.obs.K = [4.5e5;.1159];
 sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % same initial conditions for now!
 % Kalman filter tuning
 sys_spec.obs.P0 = eye(sys_spec.sys.dim_S);
@@ -31,8 +32,6 @@ sys_spec.opt.w_x = 1; % weight of state following error term
 sys_spec.opt.w_h = 1; % weigh of constraint error term
 
 sys_spec.sch.P0 = diag(ones(sys_spec.sys.n,1));
-
-sys_spec.obs.K = [4.5e5;.1159];
 % ---
 
 %% Get scattering matrix from simulation data 
@@ -59,6 +58,7 @@ xk_true = scattering_matrices_to_states(Sk_true, param);
 cycles = 110;
 tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
 uk = repmat(1:param.obs.N,1,cycles);
+fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
 
 yk = evaluate_y(xk, tau, uk, param);
 % plot_schedule(tau, uk, param);
