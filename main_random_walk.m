@@ -9,27 +9,28 @@ set(groot, 'defaultTextInterpreter','latex');
 
 % adapt these
 % ---
-sys_spec.sys.dim_S = 3;
-sys_spec.sys.S0 = eye(sys_spec.sys.dim_S);
-sys_spec.sim.T = 2;
-sys_spec.sim.dim_t = 1001;
+sys_spec.sys.dim_S = 3; % dimensionality of S 
+sys_spec.sys.S0 = eye(sys_spec.sys.dim_S); % initial S
+sys_spec.sim.T = 2; % sim duration
+sys_spec.sim.dim_t = 1001; % sample points
 % ---
-sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim_S-1);
+sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim_S-1); % dim. of state vector
 
 % adapt these
 % ---
-sys_spec.sys.sigma_y = 0.05;
-sys_spec.sys.sigma_S = 0.0001;
+sys_spec.sys.sigma_y = 0.05; % measurement noise
+sys_spec.sys.sigma_S = 0.0001; % noise on S
 
-sys_spec.obs.K = [4.5843;.1159] * (sys_spec.sim.T/sys_spec.sim.dim_t);
-sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % same initial conditions for now!
+sys_spec.obs.K = [0.009159440559441;2.315684315684316e-04]; % Lyapunov observer coeffs
+sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % initial S for observer
 
 % Kalman filter tuning
 sys_spec.kal.P0 = .1*eye(2*sys_spec.sys.n);
-sys_spec.kal.Q = .01*eye(2*sys_spec.sys.n);
+sys_spec.kal.Q = .1*eye(2*sys_spec.sys.n);
 % param.kal.R = 1*eye(param.obs.dim_y + param.obs.c);
-sys_spec.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
+sys_spec.kal.R = 0.3*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
 
+% Optimization settings
 sys_spec.opt.K0 = sys_spec.obs.K; % initial guess
 sys_spec.opt.w_x = 1; % weight of state following error term
 sys_spec.opt.w_h = 1; % weigh of constraint error term
@@ -48,11 +49,12 @@ xk_true = scattering_matrices_to_states(Sk_true, param);
 cycles = 110;
 tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
 uk = repmat(1:param.obs.N,1,cycles);
-fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
 
 yk = evaluate_y(xk, tau, uk, param);
 % plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
+fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
+
 %% Optimization to find suiting Ki parameters
 opt_technique = -1;
 
@@ -83,10 +85,16 @@ switch opt_technique
         % default parameters from sys_spec
 end
 
-[x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
-% [x_hat, h_hat] = run_PM_kalman(yk, tau, uk, param);
+%% Run observer
+use_kalman = false;
+
+if use_kalman
+    [x_hat, h_hat] = run_PM_kalman(yk, tau, uk, param);
+else
+    [x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
+end
+
 plot_performance(xk,x_hat,param, "Optimized parameters");
-% plot_observer_results(x_hat, xk, param);
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);
 fprintf("Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
 fprintf("Optimized K vector: [%.2f; %.2f]\n", param.obs.K(1), param.obs.K(2));

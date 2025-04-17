@@ -1,5 +1,5 @@
 function [x_hat, h_hat] = run_observer(yk, tau, uk, param, options)
-%RUN_OBSERVER Summary of this function goes here
+%RUN_OBSERVER Lyapunov-base observer implementation
 arguments
     yk;
     tau;
@@ -20,7 +20,7 @@ for i=2:param.sim.dim_t
     A(:,2) = h.'*dhdx;
 
     f = -pinv(A.')*param.obs.K;
-    x_hat(:,i) = x_hat(:,i-1)+f;
+    x_hat(:,i) = x_hat(:,i-1)+f; % K is normed to sample time, that's why Ts is missing here
     h_hat(:,i) = h;
 
     if (options.printDetails && mod(i,10)==0)
@@ -28,6 +28,5 @@ for i=2:param.sim.dim_t
             "\t||h||=%f\n", i, A(:,1)'*f, A(:,2)'*f, norm(h));
     end
 end
-
 end
 

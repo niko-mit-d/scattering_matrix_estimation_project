@@ -1,4 +1,5 @@
 function param = get_parameters(sys_spec)
+% GET_PARAMETERS defines all other parameters dependent of sys_spec
 param = sys_spec;
 
 %% System parameters
@@ -38,7 +39,9 @@ param.obs.D = zeros(param.sys.n); % assuming there is no output noise
 %% Kalman filter parameters
 param.kal.x_hat_0 = [param.sys.x_0; zeros(param.sys.n,1)]; % same initial conditions for now!
 
-param.kal.F = [eye(param.sys.n), eye(param.sys.n); zeros(param.sys.n), eye(param.sys.n)];
+% discrete time implementation of double integrator
+% derived from testFunctions/double_int.m
+param.kal.F = [eye(param.sys.n), param.sim.Ts*eye(param.sys.n); zeros(param.sys.n), eye(param.sys.n)];
 param.kal.C = zeros(param.obs.dim_y, 2*param.sys.n, param.obs.N);
 for i=1:param.obs.N
     param.kal.C(:,:,i) = [param.obs.C(:,:,i), zeros(param.obs.dim_y, param.sys.n)];
