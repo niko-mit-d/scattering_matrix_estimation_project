@@ -15,6 +15,9 @@ param.sys.x_0 = scattering_matrices_to_states(param.sys.S0, param);
 %% Simulation parameters
 % --- adjust these
 param.sim.T = 2; % simulation duration in sec
+param.sim.dim_t = 0;
+
+
 param.sim.Ts = 2e-3; % sample time in sec
 % ---
 
