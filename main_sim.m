@@ -14,7 +14,10 @@ sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim
 sys_spec.sys.sigma_y = 0.05;
 sys_spec.sys.sigma_S = 0.0001;
 
-sys_spec.obs.K = [4.5e5;.1159];
+% sys_spec.obs.K = [0.0092; 0.0002];
+% sys_spec.obs.K = [0.0171; 0.0008];
+sys_spec.obs.K = [0.0206; 0.0020];
+% sys_spec.obs.K = [1e5;.1159] * 1.0000e-07;
 sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % same initial conditions for now!
 
 % Kalman filter tuning
@@ -24,13 +27,13 @@ sys_spec.kal.Q = .01*eye(2*sys_spec.sys.n);
 sys_spec.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
 
 sys_spec.opt.K0 = sys_spec.obs.K; % initial guess
-sys_spec.opt.w_x = 1; % weight of state following error term
+sys_spec.opt.w_x = 2; % weight of state following error term
 sys_spec.opt.w_h = 1; % weigh of constraint error term
 % ---
 
 %% Get scattering matrix from simulation data 
 % Load simulation data (S matrix and time vector)
-load("simulation_mat_data/simdata_1.mat")
+load("simulation_mat_data/simdata_200.mat")
 % permutation due to different orders being usedx
 Sk_true = permute(Sk, [2 3 1]);
 % add noise
@@ -49,7 +52,9 @@ xk_true = scattering_matrices_to_states(Sk_true, param);
 
 %% Calculate sensor schedule
 % cycling through all sensor
-cycles = 110;
+samples_per_sensor = 5;
+cycles = round(param.sim.T/param.sim.Ts/param.sys.dim_S/samples_per_sensor);
+% cycles = 200;
 tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
 uk = repmat(1:param.obs.N,1,cycles);
 fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
@@ -65,23 +70,23 @@ switch opt_technique
     case 0
         % Global optimization using PSO
         pso_options = optimoptions("particleswarm", "Display", "iter");
-        [K, Lval] = particleswarm(@(K)calculate_performance(xk_true, yk, tau, uk, param, K'), 2, [1e5;0], [1e7;20], pso_options);
-        K=K';
+        [K, Lval] = particleswarm(@(K)calculate_performance(xk_true, yk, tau, uk, param, K'), 2, [0.015;0], [0.025;0.002], pso_options);
+        param.obs.K=K';
     case 1
         % Global optimization only K1 using PSO
         pso_options = optimoptions("particleswarm", "Display", "iter");
-        [K1, Lval] = particleswarm(@(K)calculate_performance(xk_true, yk, tau, uk, param, [K; param.opt.K0(2)]), 1, 1, 20, pso_options);
+        [K1, Lval] = particleswarm(@(K)calculate_performance(xk_true, yk, tau, uk, param, [K; param.opt.K0(2)]), 1, 0, 1, pso_options);
         param.obs.K(1) = K1;
         param.obs.K(2) = param.opt.K0(2);
     case 2
         % Optimization using fmincon
         opt_options = optimoptions("fmincon", "StepTolerance", 1e-10);
-        [K, Lval] = fmincon(@(K)calculate_performance(xk_true, yk, tau, uk, param, K), param.opt.K0, [],[],[],[],[1e6;0.001],[Inf,Inf],[],opt_options);
+        [K, Lval] = fmincon(@(K)calculate_performance(xk_true, yk, tau, uk, param, K), param.opt.K0, [],[],[],[],[0;0.001],[1,0.1],[],opt_options);
         param.obs.K = K;
     case 3
         % optimize only K1 using fmincon
         opt_options = optimoptions("fmincon", "StepTolerance", 1e-10);
-        [K1, Lval] = fmincon(@(K1)calculate_performance(xk_true, yk, tau, uk, param, [K1;param.opt.K0(2)]), param.opt.K0(1), [],[],[],[],3,Inf,[],opt_options);
+        [K1, Lval] = fmincon(@(K1)calculate_performance(xk_true, yk, tau, uk, param, [K1;param.opt.K0(2)]), param.opt.K0(1), [],[],[],[],0,1,[],opt_options);
         param.obs.K(1) = K1;
         param.obs.K(2) = param.opt.K0(2);
     otherwise
@@ -94,4 +99,4 @@ plot_performance(xk,x_hat,param, "Optimized parameters");
 % plot_observer_results(x_hat, xk, param);
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);
 fprintf("Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
-fprintf("Optimized K vector: [%.2f; %.2f]\n", param.obs.K(1), param.obs.K(2));
+fprintf("Optimized K vector: [%.4f; %.4f]\n", param.obs.K(1), param.obs.K(2));

@@ -21,7 +21,7 @@ sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim
 sys_spec.sys.sigma_y = 0.05;
 sys_spec.sys.sigma_S = 0.0001;
 
-sys_spec.obs.K = [4.5843;.1159];
+sys_spec.obs.K = [4.5843;.1159] * (sys_spec.sim.T/sys_spec.sim.dim_t);
 sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % same initial conditions for now!
 
 % Kalman filter tuning
