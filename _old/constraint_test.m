@@ -1,6 +1,5 @@
 % Script to check if calculated constraints and derivatives
 % are correct for dim_S = {2,3,4,5}
-% Set dimension of S in run_parameters.m under param.sys.dim_S.
 clear all; clc;
 
 %% Copy Maple output here

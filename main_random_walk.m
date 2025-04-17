@@ -23,13 +23,9 @@ sys_spec.sys.sigma_S = 0.0001;
 
 sys_spec.obs.K = [4.5843;.1159];
 sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % same initial conditions for now!
+
 % Kalman filter tuning
-sys_spec.obs.P0 = eye(sys_spec.sys.dim_S);
-% param.obs.Q = eye(param.obs.N); % not needed as no input available
-sys_spec.obs.Ri = eye(2*sys_spec.sys.dim_S);
-
 sys_spec.kal.P0 = .1*eye(2*sys_spec.sys.n);
-
 sys_spec.kal.Q = .01*eye(2*sys_spec.sys.n);
 % param.kal.R = 1*eye(param.obs.dim_y + param.obs.c);
 sys_spec.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
@@ -37,8 +33,6 @@ sys_spec.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
 sys_spec.opt.K0 = sys_spec.obs.K; % initial guess
 sys_spec.opt.w_x = 1; % weight of state following error term
 sys_spec.opt.w_h = 1; % weigh of constraint error term
-
-sys_spec.sch.P0 = diag(ones(sys_spec.sys.n,1));
 % ---
 
 %% Get scattering matrix from random walk
@@ -85,9 +79,8 @@ switch opt_technique
         [K1, Lval] = fmincon(@(K1)calculate_performance(xk_true, yk, tau, uk, param, [K1;param.opt.K0(2)]), param.opt.K0(1), [],[],[],[],3,Inf,[],opt_options);
         param.obs.K(1) = K1;
         param.obs.K(2) = param.opt.K0(2);
-    otherwise
-        % default parameters
-        % take from run_parameters
+    otherwise        
+        % default parameters from sys_spec
 end
 
 [x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
