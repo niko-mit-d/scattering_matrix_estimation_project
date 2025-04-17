@@ -9,6 +9,6 @@ for i=1:n_measurements
     yk(:,param.sim.t>=switching_times(i)) = param.obs.C(:,:,uk(i))*xk(:,param.sim.t>=switching_times(i));
 end
 % add noise to measurement
-yk = yk + param.sys.sigma_y*(rand(size(yk))-0.5);
+yk = yk + param.sys.sigma_y*randn(size(yk));
 end
 

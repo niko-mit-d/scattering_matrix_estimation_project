@@ -11,8 +11,8 @@ sys_spec.sys.n = 2 * sys_spec.sys.dim_S^2 - sys_spec.sys.dim_S*(sys_spec.sys.dim
 
 % adapt these
 % ---
-sys_spec.sys.sigma_y = 0.05;
-sys_spec.sys.sigma_S = 0.0001;
+sys_spec.sys.sigma_y = 0.0;
+sys_spec.sys.sigma_S = 0.03;
 
 % sys_spec.obs.K = [0.0092; 0.0002];
 % sys_spec.obs.K = [0.0171; 0.0008];
@@ -33,22 +33,25 @@ sys_spec.opt.w_h = 1; % weigh of constraint error term
 
 %% Get scattering matrix from simulation data 
 % Load simulation data (S matrix and time vector)
-load("simulation_mat_data/simdata_200.mat")
+data_path = "simdata_8.mat";
+load("simulation_mat_data/" + data_path)
 % permutation due to different orders being usedx
 Sk_true = permute(Sk, [2 3 1]);
 % add noise
-Sk = Sk_true + 0;
+Sk_noise = Sk_true + sys_spec.sys.sigma_S*(randn(size(Sk_true)) + 1i*randn(size(Sk_true)));
 % time vector not compatible size. it is shortened to fit
 % Other simulations seem to use sample time of 1e-7, so this is assumed
-tk = tk(1:size(Sk,3));
+tk = tk(1:size(Sk_true,3));
 
 sys_spec.sys.S0 = eye(sys_spec.sys.dim_S);
 sys_spec.sim.T = tk(end);
 sys_spec.sim.dim_t = length(tk);
 param = get_parameters(sys_spec);
 
-xk = scattering_matrices_to_states(Sk, param);
+xk = scattering_matrices_to_states(Sk_noise, param);
 xk_true = scattering_matrices_to_states(Sk_true, param);
+
+fprintf("Data path: " + data_path + "\nSample time: %.2e s\nSimulation duration: %.2e s\n", param.sim.Ts, param.sim.T);
 
 %% Calculate sensor schedule
 % cycling through all sensor
@@ -57,11 +60,12 @@ cycles = round(param.sim.T/param.sim.Ts/param.sys.dim_S/samples_per_sensor);
 % cycles = 200;
 tau = param.sim.T/(param.obs.N*cycles)*ones(1,param.obs.N*cycles);
 uk = repmat(1:param.obs.N,1,cycles);
-fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
+
 
 yk = evaluate_y(xk, tau, uk, param);
 % plot_schedule(tau, uk, param);
 % plot_xk_overlayed_with_yk(xk, yk, param);
+fprintf("Sensor schedule: %.2f samples per sensor\n", tau(1)/param.sim.Ts);
 
 %% Optimization to find suiting Ki parameters
 opt_technique = -1;
