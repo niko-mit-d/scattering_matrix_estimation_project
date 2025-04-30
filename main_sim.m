@@ -18,9 +18,11 @@ sys_spec.obs.K = [0.0206; 0.0020]; % Lyapunov observer coeffs
 sys_spec.obs.S0_hat = eye(sys_spec.sys.dim_S); % initial S for observer
 
 % Kalman filter tuning
-sys_spec.kal.P0 = .1*eye(2*sys_spec.sys.n);
-sys_spec.kal.Q = .1*eye(2*sys_spec.sys.n);
-sys_spec.kal.R = 0.3*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
+sys_spec.kal.P0 = 1*eye(2*sys_spec.sys.n);
+sys_spec.kal.Q = 1*eye(2*sys_spec.sys.n);
+% Last half of entries is chosen much smaller, as these are "perfect
+% measurements" with tiny covariance
+sys_spec.kal.R = 1*diag([1 1 1 1 1 1 0.01 0.01 0.01 0.01 0.01 0.01]);
 
 % Optimization settings
 sys_spec.opt.K0 = sys_spec.obs.K; % initial guess
@@ -30,7 +32,7 @@ sys_spec.opt.w_h = 1; % weigh of constraint error term
 
 %% Get scattering matrix from simulation data 
 % Load simulation data (S matrix and time vector)
-data_path = "simdata_8.mat";
+data_path = "simdata_1.mat";
 load("simulation_mat_data/" + data_path)
 % permutation due to different orders being used in sim data
 Sk_true = permute(Sk, [2 3 1]);
@@ -93,15 +95,15 @@ switch opt_technique
 end
 
 %% Run observer
-use_kalman = false;
 
-if use_kalman
-    [x_hat, h_hat] = run_PM_kalman(yk, tau, uk, param);
-else
-    [x_hat, h_hat] = run_observer(yk, tau, uk, param, "printDetails", false);
-end
+% Choose observer method here
+method = "lyapunov";
+% method = "PM_kalman";   % PM ... perfect measurement
+% method = "pure_kalman";
+% method = "pure_kalman_integrator";
+
+[x_hat, h_hat] = run_observer(yk, tau, uk, param, method);
 
 plot_performance(xk,x_hat,param, "Optimized parameters");
 plot_observer_results_with_noise(x_hat, xk, xk_true, param);
-fprintf("Loss: %.2f\n", calculate_performance(xk_true, yk, tau, uk, param, param.obs.K));
 fprintf("Optimized K vector: [%.4f; %.4f]\n", param.obs.K(1), param.obs.K(2));

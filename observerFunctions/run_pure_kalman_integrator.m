@@ -1,6 +1,5 @@
-function [x_out, h_hat, P_plus] = run_PM_kalman(yk, tau, uk, param)
-% Kalman filter using unitary constraints as perfect measurements and
-% double integrator as system model
+function [x_out, h_hat, P_plus] = run_pure_kalman_integrator(yk, tau, uk, param)
+% Runs normal Kalman filter with double integrator as model
 x_hat = zeros(2*param.sys.n, param.sim.dim_t);
 x_hat(:,1) = param.kal.x_hat_0;
 h_hat = zeros(param.obs.c, param.sim.dim_t);
@@ -13,14 +12,11 @@ P_plus = zeros(2*param.sys.n, 2*param.sys.n, param.sim.dim_t);
 P_plus(:,:,1) = param.kal.P0;
 F = param.kal.F;
 Q = param.kal.Q;
-R = param.kal.R;
+R = diag(2*param.sys.n);
 
 for i=2:param.sim.dim_t
-    % Measurement preparation
-    [h_hat(:,i-1), dhdx] = constraint_unitary(x_hat(1:param.sys.n,i-1),param);
-    % extended output matrix / output including linearized constraints
-    H = [param.kal.C(:,:,k(i-1)); dhdx, zeros(param.obs.c, param.sys.n)];
-    y = [yk(:,i); dhdx*x_hat(1:param.sys.n,i-1)-h_hat(:,i-1)];
+    H = [param.kal.C(:,:,k(i-1))];
+    y = yk(:,i);
 
     P_minus = F*P_plus(:,:,i-1)*F.' + Q;
     K = P_minus*H.'/(H*P_minus*H.' + R);
@@ -31,4 +27,5 @@ for i=2:param.sim.dim_t
 end
 x_out = x_hat(1:param.sys.n,:);
 end
+
 

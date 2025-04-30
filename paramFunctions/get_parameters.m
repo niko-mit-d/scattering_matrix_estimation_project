@@ -36,9 +36,11 @@ for i=1:param.obs.N
 end
 param.obs.D = zeros(param.sys.n); % assuming there is no output noise
 
-%% Kalman filter parameters
-param.kal.x_hat_0 = [param.sys.x_0; zeros(param.sys.n,1)]; % same initial conditions for now!
+%% Kalman filter parameters for double integrator model
+% For model-free Kalman filter (run_pure_kalman.m), the tuning matrices
+% need to be set inside the function to keep param struct tidy
 
+param.kal.x_hat_0 = [param.sys.x_0; zeros(param.sys.n,1)]; % same initial conditions for now!
 % discrete time implementation of double integrator
 % derived from testFunctions/double_int.m
 param.kal.F = [eye(param.sys.n), param.sim.Ts*eye(param.sys.n); zeros(param.sys.n), eye(param.sys.n)];
